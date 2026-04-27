@@ -3,11 +3,11 @@ import copy
 import datetime
 import threading
 
-import elasticsearch
+from opensearchpy import OpenSearch as elasticsearch
 from unittest import mock
 import pytest
-from elasticsearch.exceptions import ConnectionError
-from elasticsearch.exceptions import ElasticsearchException
+from opensearchpy.exceptions import ConnectionError
+from opensearchpy.exceptions import TransportError as ElasticsearchException
 
 from elastalert.alerts import Alerter
 from elastalert.enhancements import BaseEnhancement

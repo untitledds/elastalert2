@@ -42,7 +42,7 @@ from elastalert.util import parse_hosts
 from elastalert.util import get_version_from_cluster_info
 from elastalert.util import expand_string_into_array
 
-from elasticsearch.client import Elasticsearch
+from opensearchpy import OpenSearch as Elasticsearch
 
 
 @pytest.mark.parametrize('spec, expected_delta', [
@@ -700,7 +700,7 @@ def test_get_version(version, distro, expectedversion, es_env_version):
         env_patch['ES_VERSION'] = es_env_version
 
     with (mock.patch.dict(os.environ, env_patch),
-          mock.patch('elasticsearch.client.Elasticsearch.info', new=MagicMock(return_value=mockInfo))):
+          mock.patch('opensearchpy.OpenSearch.info', new=MagicMock(return_value=mockInfo))):
         client = Elasticsearch()
         actualversion = get_version_from_cluster_info(client)
     assert expectedversion == actualversion
