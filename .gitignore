@@ -1,38 +1,22 @@
-```
-# Dependencies
+/config.yaml
+.tox/
+.coverage
+.idea/*
+.cache/
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
-.venv/
-venv/
-.env
-.env.local
-.env.*
-
-# Test and coverage
-.coverage
-coverage/
-htmlcov/
-.pytest_cache/
-.mypy_cache/
-
-# Build and distribution
-dist/
-build/
+virtualenv_run/
+.venv*
 *.egg-info/
-
-# Logs
-*.log
-
-# Editors
-.vscode/
-.idea/
+dist/
+venv/
+env/
+docs/build/
+build/
+.pytest_cache/
+my_rules
 *.swp
-*.swo
-*.tmp
-
-# OS
-.DS_Store
-Thumbs.db
-```
+*~
+/rules/
+/chart/elastalert2/real_values.yaml
+mod/
