@@ -2,10 +2,10 @@
 import copy
 import datetime
 import threading
-
-from opensearchpy import OpenSearch as elasticsearch
 from unittest import mock
+
 import pytest
+from opensearchpy import OpenSearch as elasticsearch
 from opensearchpy.exceptions import ConnectionError
 from opensearchpy.exceptions import TransportError as ElasticsearchException
 
@@ -92,7 +92,7 @@ def test_init_rule(ea):
 
 
 def test_query(ea):
-    ea.thread_data.current_es.search.return_value = {'hits': {'total': {'value':  0}, 'hits': []}}
+    ea.thread_data.current_es.search.return_value = {'hits': {'total': {'value': 0}, 'hits': []}}
     ea.run_query(ea.rules[0], START, END)
     ea.thread_data.current_es.search.assert_called_with(body={
         'query': {'bool': {
@@ -253,14 +253,14 @@ def run_rule_query_exception(ea, mock_es):
 
 def test_query_exception(ea):
     mock_es = mock.Mock()
-    mock_es.search.side_effect = ElasticsearchException
+    mock_es.search.side_effect = ElasticsearchException(500, 'Test error', {'error': 'details'})
     run_rule_query_exception(ea, mock_es)
 
 
 def test_query_exception_count_query(ea):
     ea.rules[0]['use_count_query'] = True
     mock_es = mock.Mock()
-    mock_es.count.side_effect = ElasticsearchException
+    mock_es.count.side_effect = ElasticsearchException(500, 'Test error', {'error': 'details'})
     run_rule_query_exception(ea, mock_es)
 
 
@@ -529,7 +529,7 @@ def test_agg_no_writeback_connectivity(ea):
     ea.rules[0]['type'].matches = [{'@timestamp': hit1},
                                    {'@timestamp': hit2},
                                    {'@timestamp': hit3}]
-    ea.writeback_es.index.side_effect = elasticsearch.exceptions.ElasticsearchException('Nope')
+    ea.writeback_es.index.side_effect = ElasticsearchException(500, 'Nope', {'error': 'details'})
     with mock.patch('elastalert.elastalert.elasticsearch_client'):
         with mock.patch.object(ea, 'find_pending_aggregate_alert', return_value=None):
             ea.run_rule(ea.rules[0], END, START)

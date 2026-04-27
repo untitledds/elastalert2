@@ -23,12 +23,7 @@ import pytz
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.executors.pool import ThreadPoolExecutor
 from croniter import croniter
-from opensearchpy.exceptions import ConnectionError
-from opensearchpy.exceptions import NotFoundError
-from opensearchpy.exceptions import TransportError
-
-# ElasticsearchException is not available in opensearchpy, use Exception as base
-ElasticsearchException = Exception
+from opensearchpy.exceptions import ConnectionError, NotFoundError, TransportError as ElasticsearchException
 
 from elastalert.alerters.debug import DebugAlerter
 from elastalert.config import load_conf
