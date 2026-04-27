@@ -5,7 +5,6 @@ import threading
 from unittest import mock
 
 import pytest
-from opensearchpy import OpenSearch as elasticsearch
 from opensearchpy.exceptions import ConnectionError
 from opensearchpy.exceptions import TransportError as ElasticsearchException
 
