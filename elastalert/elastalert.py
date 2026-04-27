@@ -25,10 +25,11 @@ from apscheduler.executors.pool import ThreadPoolExecutor
 from croniter import croniter
 from opensearchpy.exceptions import ConnectionError
 from opensearchpy.exceptions import NotFoundError
+from opensearchpy.exceptions import OpenSearchException
 from opensearchpy.exceptions import TransportError
 
-# ElasticsearchException is not available in opensearchpy, use Exception as base
-ElasticsearchException = Exception
+# ElasticsearchException alias for backward compatibility with opensearchpy
+ElasticsearchException = OpenSearchException
 
 from elastalert.alerters.debug import DebugAlerter
 from elastalert.config import load_conf
@@ -418,9 +419,13 @@ class ElastAlerter(object):
         except ElasticsearchException as e:
             # Elasticsearch sometimes gives us GIGANTIC error messages
             # (so big that they will fill the entire terminal buffer)
-            if len(str(e)) > 1024:
-                e = str(e)[:1024] + '... (%d characters removed)' % (len(str(e)) - 1024)
-            self.handle_error('Error running query: %s' % (e), {'rule': rule['name'], 'query': query})
+            try:
+                error_str = str(e)
+            except Exception:
+                error_str = repr(e)
+            if len(error_str) > 1024:
+                error_str = error_str[:1024] + '... (%d characters removed)' % (len(error_str) - 1024)
+            self.handle_error('Error running query: %s' % (error_str), {'rule': rule['name'], 'query': query})
             return None
         hits = res['hits']['hits']
         self.thread_data.num_hits += len(hits)
@@ -470,9 +475,13 @@ class ElastAlerter(object):
         except ElasticsearchException as e:
             # Elasticsearch sometimes gives us GIGANTIC error messages
             # (so big that they will fill the entire terminal buffer)
-            if len(str(e)) > 1024:
-                e = str(e)[:1024] + '... (%d characters removed)' % (len(str(e)) - 1024)
-            self.handle_error('Error running count query: %s' % (e), {'rule': rule['name'], 'query': query})
+            try:
+                error_str = str(e)
+            except Exception:
+                error_str = repr(e)
+            if len(error_str) > 1024:
+                error_str = error_str[:1024] + '... (%d characters removed)' % (len(error_str) - 1024)
+            self.handle_error('Error running count query: %s' % (error_str), {'rule': rule['name'], 'query': query})
             return None
 
         self.thread_data.num_hits += res['count']
@@ -537,9 +546,13 @@ class ElastAlerter(object):
         except ElasticsearchException as e:
             # Elasticsearch sometimes gives us GIGANTIC error messages
             # (so big that they will fill the entire terminal buffer)
-            if len(str(e)) > 1024:
-                e = str(e)[:1024] + '... (%d characters removed)' % (len(str(e)) - 1024)
-            self.handle_error('Error running terms query: %s' % (e), {'rule': rule['name'], 'query': query})
+            try:
+                error_str = str(e)
+            except Exception:
+                error_str = repr(e)
+            if len(error_str) > 1024:
+                error_str = error_str[:1024] + '... (%d characters removed)' % (len(error_str) - 1024)
+            self.handle_error('Error running terms query: %s' % (error_str), {'rule': rule['name'], 'query': query})
             return None
 
         if 'aggregations' not in res:
@@ -570,9 +583,13 @@ class ElastAlerter(object):
         try:
             res = self.thread_data.current_es.search(index=index, body=query, size=0, ignore_unavailable=True)
         except ElasticsearchException as e:
-            if len(str(e)) > 1024:
-                e = str(e)[:1024] + '... (%d characters removed)' % (len(str(e)) - 1024)
-            self.handle_error('Error running query: %s' % (e), {'rule': rule['name']})
+            try:
+                error_str = str(e)
+            except Exception:
+                error_str = repr(e)
+            if len(error_str) > 1024:
+                error_str = error_str[:1024] + '... (%d characters removed)' % (len(error_str) - 1024)
+            self.handle_error('Error running query: %s' % (error_str), {'rule': rule['name']})
             return None
         if 'aggregations' not in res:
             return {}
