@@ -1,22 +1,50 @@
-/config.yaml
-.tox/
-.coverage
-.idea/*
-.cache/
+```
+# Python
 __pycache__/
 *.pyc
-virtualenv_run/
-.venv*
+*.pyo
+*.pyd
+*.py~
+*.py.class
+*.pyc.class
+*.so
 *.egg-info/
-dist/
-venv/
-env/
-docs/build/
+.eggs/
 build/
+dist/
+*.egg
+.coverage
+.coverage.*
+.tox/
+.nox/
 .pytest_cache/
-my_rules
+.mypy_cache/
+.hypothesis/
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+ENV/
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Editor specific
+.vscode/
+.idea/
 *.swp
+*.swo
 *~
-/rules/
-/chart/elastalert2/real_values.yaml
-mod/
+```

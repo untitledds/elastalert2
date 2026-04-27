@@ -6,12 +6,11 @@ import json
 import os
 import time
 
-import elasticsearch.helpers
+from opensearchpy import OpenSearch as Elasticsearch
+from opensearchpy import RequestsHttpConnection
+from opensearchpy import helpers as opensearch_helpers
+from opensearchpy.exceptions import NotFoundError
 import yaml
-from elasticsearch import RequestsHttpConnection
-from elasticsearch.client import Elasticsearch
-from elasticsearch.client import IndicesClient
-from elasticsearch.exceptions import NotFoundError
 from envparse import Env
 
 from elastalert.auth import Auth
@@ -32,7 +31,7 @@ def create_index_mappings(es_client, ea_index, recreate=False, old_ea_index=None
         print('FATAL - Unsupported Elasticsearch version: ' + esversion + '. Aborting.')
         exit(1)
 
-    es_index = IndicesClient(es_client)
+    es_index = es_client.indices
     if not recreate:
         if es_index.exists(ea_index):
             print('Index ' + ea_index + ' already exists. Skipping index creation.')
@@ -55,11 +54,11 @@ def create_index_mappings(es_client, ea_index, recreate=False, old_ea_index=None
         if es_index.exists(index_name):
             print('Deleting index ' + index_name + '.')
             try:
-                es_index.delete(index_name)
+                es_index.delete(index=index_name)
             except NotFoundError:
                 # Why does this ever occur?? It shouldn't. But it does.
                 pass
-        es_index.create(index_name)
+        es_index.create(index=index_name)
 
     # To avoid a race condition. TODO: replace this with a real check
     time.sleep(2)
@@ -90,7 +89,7 @@ def create_index_mappings(es_client, ea_index, recreate=False, old_ea_index=None
     if old_ea_index:
         print("Copying all data from old index '{0}' to new index '{1}'".format(old_ea_index, ea_index))
         # Use the defaults for chunk_size, scroll, scan_kwargs, and bulk_kwargs
-        elasticsearch.helpers.reindex(es_client, old_ea_index, ea_index)
+        opensearch_helpers.reindex(es_client, old_ea_index, ea_index)
 
     print('Done!')
 

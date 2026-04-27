@@ -132,9 +132,9 @@ def configure_logging(args, conf):
         )
 
     if not args.es_debug and 'logging' not in conf:
-        logging.getLogger('elasticsearch').setLevel(logging.WARNING)
+        logging.getLogger('opensearch').setLevel(logging.WARNING)
 
     if args.es_debug_trace:
-        tracer = logging.getLogger('elasticsearch.trace')
+        tracer = logging.getLogger('opensearch.trace')
         tracer.setLevel(logging.INFO)
         tracer.addHandler(logging.FileHandler(args.es_debug_trace))
