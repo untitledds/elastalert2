@@ -2,11 +2,11 @@
 import copy
 import elastalert.eql as eql
 
-from elasticsearch import Elasticsearch
-from elasticsearch import RequestsHttpConnection
-from elasticsearch.client import _make_path
-from elasticsearch.client import query_params
-from elasticsearch.exceptions import TransportError
+from opensearchpy import OpenSearch as Elasticsearch
+from opensearchpy import RequestsHttpConnection
+from opensearchpy.client.utils import _make_path
+from opensearchpy.client.utils import query_params
+from opensearchpy.exceptions import TransportError
 
 
 class ElasticSearchClient(Elasticsearch):

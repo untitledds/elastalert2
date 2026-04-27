@@ -1,7 +1,7 @@
 import logging
 from unittest import mock
 import pytest
-from elasticsearch.exceptions import TransportError
+from opensearchpy.exceptions import TransportError
 from elastalert.util import EAException
 from elastalert.loaders import FileRulesLoader
 from elastalert.alerters.indexer import IndexerAlerter
@@ -47,7 +47,7 @@ def test_indexer_alerter(caplog):
         '@timestamp': '2021-05-09T14:43:30'
     }
 
-    with mock.patch('elasticsearch.Elasticsearch.index') as mock_create:
+    with mock.patch('opensearchpy.OpenSearch.index') as mock_create:
         alert.alert([match])
 
     expected_data = {
@@ -84,7 +84,7 @@ def test_alert_with_file_config():
         '@timestamp': '2021-05-09T14:43:30'
     }
 
-    with mock.patch('elasticsearch.Elasticsearch.index') as mock_create, \
+    with mock.patch('opensearchpy.OpenSearch.index') as mock_create, \
             mock.patch('os.path.isfile', return_value=True), \
             mock.patch('builtins.open', new_callable=mock.mock_open,
                        read_data='indexer_connection:\n  es_host: localhost\n  es_port: 9200\n  indexer_alerts_name: test_index'), \
@@ -121,7 +121,7 @@ def test_alert_with_transport_error():
 
         mock_run = mock.MagicMock(side_effect=TransportError(500, "Error creating index"))
         # Mocking the Elasticsearch create method to raise TransportError
-        with mock.patch('elasticsearch.Elasticsearch.index', mock_run), pytest.raises(TransportError):
+        with mock.patch('opensearchpy.OpenSearch.index', mock_run), pytest.raises(TransportError):
             alert.alert([match])
 
     assert "Error posting to SIEM" in str(ea)
@@ -290,7 +290,7 @@ def test_alert_with_matches():
         'key2': 'value2'
     }
 
-    with mock.patch('elasticsearch.Elasticsearch.index') as mock_create, \
+    with mock.patch('opensearchpy.OpenSearch.index') as mock_create, \
             mock.patch.object(alert, 'flatten_dict', return_value=alert_config) as mock_flatten, \
             mock.patch.object(alert, 'event_orig_fields', side_effect=lambda x, y: f"processed_{y}") as mock_event_orig_fields, \
             mock.patch.object(alert, 'remove_matching_pairs', return_value=alert_config) as mock_remove_matching_pairs, \
@@ -334,7 +334,7 @@ def test_alert_with_empty_matches():
         'key1': 'value1',
         'key2': 'value2'
     }
-    with mock.patch('elasticsearch.Elasticsearch.index') as mock_create, \
+    with mock.patch('opensearchpy.OpenSearch.index') as mock_create, \
             mock.patch.object(alert, 'flatten_dict', return_value=alert_config) as mock_flatten, \
             mock.patch.object(alert, 'remove_matching_pairs', return_value=alert_config) as mock_remove_matching_pairs, \
             mock.patch.object(alert, 'make_nested_fields', return_value=alert_config) as mock_make_nested_fields, \

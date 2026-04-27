@@ -34,7 +34,7 @@ def test_es_version(es_client):
     versionData['number'] = "1.2.3"
     mockInfo['version'] = versionData
 
-    with mock.patch('elasticsearch.client.Elasticsearch.info', new=MagicMock(return_value=mockInfo)):
+    with mock.patch('opensearchpy.OpenSearch.info', new=MagicMock(return_value=mockInfo)):
         version = es_client.es_version
         assert version == "1.2.3"
 

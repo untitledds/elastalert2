@@ -3,7 +3,7 @@ aws-requests-auth>=0.4.3
 boto3>=1.42.89
 cffi>=2.0.0
 croniter>=6.2.2
-elasticsearch==7.10.1
+opensearch-py==3.1.0
 envparse>=0.2.0
 exotel==0.1.5
 Jinja2>=3.1.6

@@ -23,10 +23,12 @@ import pytz
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.executors.pool import ThreadPoolExecutor
 from croniter import croniter
-from elasticsearch.exceptions import ConnectionError
-from elasticsearch.exceptions import ElasticsearchException
-from elasticsearch.exceptions import NotFoundError
-from elasticsearch.exceptions import TransportError
+from opensearchpy.exceptions import ConnectionError
+from opensearchpy.exceptions import NotFoundError
+from opensearchpy.exceptions import TransportError
+
+# ElasticsearchException is not available in opensearchpy, use Exception as base
+ElasticsearchException = Exception
 
 from elastalert.alerters.debug import DebugAlerter
 from elastalert.config import load_conf
@@ -125,10 +127,10 @@ class ElastAlerter(object):
             )
 
         if not self.args.es_debug:
-            logging.getLogger('elasticsearch').setLevel(logging.WARNING)
+            logging.getLogger('opensearch').setLevel(logging.WARNING)
 
         if self.args.es_debug_trace:
-            tracer = logging.getLogger('elasticsearch.trace')
+            tracer = logging.getLogger('opensearch.trace')
             tracer.setLevel(logging.INFO)
             tracer.addHandler(logging.FileHandler(self.args.es_debug_trace))
 
